@@ -63,8 +63,29 @@ public class LinkedListIndexList<T> implements IndexList<T> {
 
 	@Override
 	public T remove(int index) throws IndexOutOfBoundsException {
-		// TODO Auto-generated method stub
-		return null;
+		if (this.isEmpty()) {
+			return null;
+		}
+		this.checkIndex(index);
+		if (index == 0) {
+			Node<T> temp = this.header;
+			T result = temp.getElement();
+			this.header = this.header.getNext();
+			temp.setNext(null);
+			temp.setElement(null);
+			this.size--;
+			return result;
+		}
+		else {
+			Node<T> temp1 = this.findNode(index - 1);
+			Node<T> temp2 = temp1.getNext();
+			T result = temp2.getElement();
+			temp1.setNext(temp2.getNext());
+			temp2.setNext(null);
+			temp2.setElement(null);
+			this.size--;
+			return result;
+		}
 	}
 
 	@Override
@@ -78,16 +99,37 @@ public class LinkedListIndexList<T> implements IndexList<T> {
 
 	@Override
 	public void add(int index, T e) throws IndexOutOfBoundsException {
-		// TODO Auto-generated method stub
+		if (index == this.size()) {
+			this.add(e);
+			return;
+		}
+		this.checkIndex(index);
 
+		if (index == 0) {
+			Node<T> newNode = new Node<T>(e, null);
+			newNode.setNext(this.header);
+			this.header = newNode;
+		}
+		else {
+			Node<T> newNode = new Node<T>(e, null);
+			Node<T> temp = this.findNode(index-1);
+			newNode.setNext(temp.getNext());
+			temp.setNext(newNode);
+		}
+		this.size++;
 	}
 
 	@Override
 	public void add(T e) {
-		
-		Node<T> newNode = new Node<T>(e,null );
-		Node<T> temp = this.findNode(this.size() - 1);
-		temp.setNext(newNode);
+		if (this.isEmpty()) {
+			this.header = new Node(e, null);
+
+		}
+		else {
+			Node<T> newNode = new Node<T>(e,null );
+			Node<T> temp = this.findNode(this.size() - 1);
+			temp.setNext(newNode);
+		}
 		this.size++;
 	}
 
