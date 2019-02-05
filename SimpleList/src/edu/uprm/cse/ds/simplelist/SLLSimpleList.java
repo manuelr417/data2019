@@ -79,26 +79,77 @@ public class SLLSimpleList<T> implements SimpleList<T> {
 
 	@Override
 	public void addFirst(T e) {
-		// TODO Auto-generated method stub
-
+		if (this.isEmpty()) {
+			Node<T> newNode = new Node<T>(e, null);
+			this.header = this.tail = newNode;
+			this.size++;
+		}
+		else {
+			Node<T> newNode = new Node<T>(e, null);
+			newNode.setNext(this.header);
+			this.header = newNode;
+			this.size++;
+		}
 	}
 
 	@Override
 	public void addLast(T e) {
-		// TODO Auto-generated method stub
-
+		if (this.isEmpty()) {
+			Node<T> newNode = new Node<T>(e, null);
+			this.header = this.tail = newNode;
+			this.size++;
+		}
+		else {
+			Node<T> newNode = new Node<T>(e, null);
+			this.tail.setNext(newNode);
+			this.tail = newNode;
+			this.size++;
+		}
 	}
 
 	@Override
 	public T removeFirst() {
-		// TODO Auto-generated method stub
-		return null;
+		if (this.isEmpty()) {
+			return null;
+		}
+		else {
+			T result = this.header.getElement();
+			Node<T> temp = this.header;
+			this.header = this.header.getNext();
+			temp.setElement(null);
+			temp.setNext(null);
+			this.size--;
+			return result;
+		}
 	}
 
 	@Override
 	public T removeLast() {
-		// TODO Auto-generated method stub
-		return null;
+		if (this.isEmpty()) {
+			return null;
+		}
+		else {
+			if (this.size() == 1) {
+				T result = this.header.getElement();
+				this.header.setElement(null);
+				this.header = this.tail = null;
+				this.size--;
+				return result;
+			}
+			else {
+				Node<T> temp = this.header;
+				while(temp.getNext() != this.tail) {
+					temp = temp.getNext();
+				}
+				Node<T> target = temp.getNext();
+				T result = target.getElement();
+				temp.setNext(null);
+				this.tail = temp;
+				target.setElement(null);
+				this.size--;
+				return result;
+			}
+		}
 	}
 
 }
