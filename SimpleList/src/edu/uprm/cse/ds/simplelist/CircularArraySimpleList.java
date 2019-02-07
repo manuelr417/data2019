@@ -84,14 +84,30 @@ public class CircularArraySimpleList<T> implements SimpleList<T> {
 
 	@Override
 	public T removeFirst() {
-		// TODO Auto-generated method stub
-		return null;
+		if (this.isEmpty()) {
+			return null;
+		}
+		else {
+			T result = this.elements[this.firstPosition];
+			this.elements[this.firstPosition] = null;
+			this.firstPosition = this.nextPosition(this.firstPosition);
+			this.size--;
+			return result;
+		}
 	}
 
 	@Override
 	public T removeLast() {
-		// TODO Auto-generated method stub
-		return null;
+		if (this.isEmpty()) {
+			return null;
+		}
+		else {
+			T result = this.elements[this.lastPosition];
+			this.elements[this.lastPosition] = null;
+			this.lastPosition = this.previousPosition(this.lastPosition);
+			this.size--;
+			return result;
+		}
 	}
 	
 	private int nextPosition(int i) {
@@ -104,8 +120,12 @@ public class CircularArraySimpleList<T> implements SimpleList<T> {
 	
 	private void changeCapacity(int newCapacity) {
 		T [] temp = (T[]) new Object[newCapacity];
-		for (int i=0; i < this.size(); ++i) {
-			temp[i] = this.elements[i];
+		
+		//int j = this.firstPosition;
+		for (int i=0, j = this.firstPosition; i < this.size(); 
+				++i, j = this.nextPosition(j)) {
+			temp[i] = this.elements[j];
+			//j = this.nextPosition(j);
 		}
 		this.elements = temp;
 	}
