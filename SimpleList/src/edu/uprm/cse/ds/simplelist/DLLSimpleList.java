@@ -128,8 +128,21 @@ public class DLLSimpleList<T> implements SimpleList<T> {
 
 	@Override
 	public T removeLast() {
-		// TODO Auto-generated method stub
-		return null;
+		if (this.isEmpty()) {
+			return null;
+		}
+		else {
+			Node<T> target = this.tail.getPrevious();
+			T result = target.getElement();
+			target.getPrevious().setNext(this.tail);
+			this.tail.setPrevious(target.getPrevious());
+			target.setNext(null);
+			target.setPrevious(null);
+			target.setElement(null);
+			this.size--;
+			return result;
+
+		}
 	}
 
 }
