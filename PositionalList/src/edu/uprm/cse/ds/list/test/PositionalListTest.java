@@ -21,6 +21,12 @@ public class PositionalListTest {
 		for (String s: L) {
 			System.out.println(s);
 		}
+		
+		System.out.printf("Last: %s\n", L.remove(L.last()));
+		L.addLast("Lu");
+		for (String s: L) {
+			System.out.println(s);
+		}
 	}
 
 }
