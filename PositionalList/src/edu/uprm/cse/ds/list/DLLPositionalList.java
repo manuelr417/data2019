@@ -1,6 +1,7 @@
 package edu.uprm.cse.ds.list;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class DLLPositionalList<T> implements PositionalList<T> {
 	private static class Node<T> implements Position<T>{
@@ -64,6 +65,30 @@ public class DLLPositionalList<T> implements PositionalList<T> {
 		
 	}
 
+	private class PositionalListIterator<T> implements Iterator<T>{
+		private Node<T> currentPosition;
+		
+		private PositionalListIterator() {
+			this.currentPosition = (Node<T>) header.getNext();
+		}
+		@Override
+		public boolean hasNext() {
+			return this.currentPosition != tail;
+		}
+
+		@Override
+		public T next() {
+			if (hasNext()) {
+				T result = this.currentPosition.getElement();
+				this.currentPosition = this.currentPosition.getNext();
+				return result;
+			}
+			else {
+				throw new NoSuchElementException();
+			}
+		}
+		
+	}
 	private int size;
 	private Node<T> header;
 	private Node<T> tail;
@@ -136,44 +161,83 @@ public class DLLPositionalList<T> implements PositionalList<T> {
 
 	@Override
 	public void addFirst(T e) {
-		// TODO Auto-generated method stub
-
+		this.addBetween(this.header, this.header.getNext(), e);
 	}
 
 	@Override
 	public void addLast(T e) {
-		// TODO Auto-generated method stub
-
+		this.addBetween(this.tail.getPrev(), this.tail, e);
 	}
 
 	@Override
 	public void addBefore(Position<T> p, T e) {
-		// TODO Auto-generated method stub
+		Node<T> temp = (Node<T>) p;
+		if (temp == this.header) {
+			throw new IllegalArgumentException();
+		}
+		else {
+			this.addBetween(temp.getPrev(), temp, e);
+		}
 
 	}
 
 	@Override
 	public void addAfter(Position<T> p, T e) {
-		// TODO Auto-generated method stub
+		Node<T> temp = (Node<T>) p;
+		if (temp == this.tail) {
+			throw new IllegalArgumentException();
+		}
+		else {
+			this.addBetween(temp, temp.getNext(), e);
+		}
 
 	}
 
 	@Override
 	public T set(Position<T> p, T e) {
-		// TODO Auto-generated method stub
-		return null;
+		Node<T> temp = (Node<T>) p;
+		if ((temp == this.header) ||
+				(temp == this.tail)) {
+			throw new IllegalArgumentException();
+		}
+		else {
+			T result = temp.getElement();
+			temp.setElement(e);
+			return result;
+		}
 	}
 
 	@Override
 	public T remove(Position<T> p) {
-		// TODO Auto-generated method stub
-		return null;
+		Node<T> temp = (Node<T>) p;
+		if ((temp == this.header) ||
+				(temp == this.tail)) {
+			throw new IllegalArgumentException();
+		}	
+		else {
+			temp.getPrev().setNext(temp.getNext());
+			temp.getNext().setPrev(temp.getPrev());
+			T result = temp.getElement();
+			temp.setElement(null);
+			temp.setNext(null);
+			temp.setPrev(null);
+			this.size--;
+			return result;
+		}
 	}
 
 	@Override
 	public Iterator<T> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PositionalListIterator<T>();
 	}
 
+	private void addBetween(Node<T> prev, Node<T> next, T e) {
+		Node<T> temp = new Node();
+		temp.setElement(e);
+		temp.setNext(next);
+		temp.setPrev(prev);
+		prev.setNext(temp);
+		next.setPrev(temp);
+		this.size++;
+	}
 }
