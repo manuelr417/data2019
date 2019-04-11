@@ -99,6 +99,7 @@ public class HeapPriorityQueue<K, V> extends AbstractPriorityQueue<K, V> {
 		int pos = 0;
 		int smallIndex;
 		while (pos < this.size()) {
+		//while(this.hasLeftChild(pos)) {
 			Entry<K,V> current = this.heap.get(pos);
 			if (this.hasLeftChild(pos)) {
 				Entry<K,V> leftChild  = this.heap.get(this.leftChild(pos));
