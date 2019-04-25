@@ -163,14 +163,181 @@ public class LinkedBinarySearchTree<K, V> implements BinarySearchTree<K, V> {
 
 	@Override
 	public void add(K key, V value) {
-		// TODO Auto-generated method stub
+		if (this.isEmpty()) {
+			this.root = new BTNode<K,V>(new BTEntry<K, V>(key, value), null, null, null);
+			this.size++;
+		}
+		else {
+			this.addAux(this.root, key, value);
+		}
+	}
 
+	private void addAux(BTNode<K, V> N, K key, V value) {
+		// Assumes N is not null
+		int c = this.comparator.compare(key, N.getValue().getKey());
+		if (c == 0) {
+			if (Math.random() > 0.5) {
+				
+				if (N.getRightChild() != null) {
+					this.addAux(N.getRightChild(), key, value);
+
+				}
+				else {
+					BTNode<K,V> newNode = 
+							new BTNode<K,V>(new BTEntry<K, V>(key, value), null, null, null);
+					N.setRightChild(newNode);
+					newNode.setParent(N);
+					this.size++;
+					return;
+				}
+			}
+			else {
+				if (N.getLeftChild() != null) {
+					this.addAux(N.getLeftChild(), key, value);
+				}
+				else {
+					BTNode<K,V> newNode = 
+							new BTNode<K,V>(new BTEntry<K, V>(key, value), null, null, null);
+					N.setLeftChild(newNode);
+					newNode.setParent(N);
+					this.size++;
+					return;
+				}
+			}
+		}
+		else if (c < 0) {
+			// insert on left child
+			if (N.getLeftChild() != null) {
+				this.addAux(N.getLeftChild(), key, value);
+			}
+			else {
+				BTNode<K,V> newNode = 
+						new BTNode<K,V>(new BTEntry<K, V>(key, value), null, null, null);
+				N.setLeftChild(newNode);
+				newNode.setParent(N);
+				this.size++;
+				return;
+			}
+		}
+		else {
+			if (N.getRightChild() != null) {
+				this.addAux(N.getRightChild(), key, value);
+
+			}
+			else {
+				BTNode<K,V> newNode = 
+						new BTNode<K,V>(new BTEntry<K, V>(key, value), null, null, null);
+				N.setRightChild(newNode);
+				newNode.setParent(N);
+				this.size++;
+				return;
+			}
+		}
+		
 	}
 
 	@Override
 	public Entry<K, V> remove(K key) {
-		// TODO Auto-generated method stub
-		return null;
+		if (this.isEmpty()) {
+			return null;
+		}
+		else {
+			int c = this.comparator.compare(key, this.root.getValue().getKey());
+			if (c == 0) {
+				Entry<K,V> result = null;
+				result = this.root.getValue();
+				
+
+				if ((this.root.getLeftChild() == null) &&
+				(this.root.getRightChild() == null)) {
+					this.root = null;
+					this.size--;
+					
+				}
+				else if (this.root.getRightChild() == null) {
+					this.root = this.root.getLeftChild();
+					this.size--;
+
+				}
+				else {
+					Entry<K,V> temp = this.findMinRight(this.root.getRightChild());
+					this.root.setValue(temp);
+					this.removeAux(this.root.getRightChild(), temp.getKey());
+				}
+				return result;
+			}
+			else if (c < 0) {
+				return this.removeAux(this.root.getLeftChild(), key);
+			}
+			else {
+				return this.removeAux(this.root.getRightChild(), key);
+			}
+		}
+	}
+
+	
+	private Entry<K, V> findMinRight(BTNode<K, V> N) {
+		while (N.getLeftChild() != null) {
+			N = N.getLeftChild();
+		}
+		return N.getValue();
+	}
+
+	private Entry<K, V> removeAux(BTNode<K, V> N, K key) {
+		if (N == null) {
+			return null;
+		}
+		else {
+			int c = this.comparator.compare(key, N.getValue().getKey());
+			if (c == 0) {
+				Entry<K,V> result = null;
+				result = N.getValue();
+			
+
+				if ((N.getLeftChild() == null) &&
+				(N.getRightChild() == null)) {
+					if (N.getParent().getLeftChild() == N) {
+						N.getParent().setLeftChild(null);
+					}
+					else {
+						N.getParent().setRightChild(null);
+					}
+					this.size--;
+				}
+				else if (N.getRightChild() == null) {
+					if (N.getParent().getLeftChild() == N) {
+						N.getParent().setLeftChild(N.getLeftChild());
+						N.getLeftChild().setParent(N.getParent());
+						N.setLeftChild(null);
+						N.setParent(null);
+						N.setValue(null);
+					}
+					else {
+						N.getParent().setRightChild(N.getLeftChild());
+						N.getLeftChild().setParent(N.getParent());
+						N.setLeftChild(null);
+						N.setParent(null);
+						N.setValue(null);
+					}
+					this.size--;
+
+				}
+				else {
+					Entry<K,V> temp = this.findMinRight(N.getRightChild());
+					N.setValue(temp);
+					this.removeAux(N.getRightChild(), temp.getKey());
+				}
+				return result;
+	
+			}
+			else if (c < 0) {
+				return this.removeAux(N.getLeftChild(), key);
+			}
+			else {
+				return this.removeAux(N.getRightChild(), key);
+
+			}
+		}
 	}
 
 	@Override
